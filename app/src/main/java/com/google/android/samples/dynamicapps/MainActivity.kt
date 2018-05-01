@@ -16,11 +16,13 @@
 
 package com.google.android.samples.dynamicapps
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.constraint.Group
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -51,9 +53,16 @@ class MainActivity : AppCompatActivity() {
             // Handle changes in state.
             when (state.status()) {
                 SplitInstallSessionStatus.DOWNLOADING -> {
+                    //  In order to see this, the application has to be uploaded to the Play Store.
                     displayLoadingState(state, "Downloading $name")
                 }
                 SplitInstallSessionStatus.REQUIRES_USER_CONFIRMATION -> {
+                    /*
+                      This may occur when attempting to download a sufficiently large module.
+
+                      In order to see this, the application has to be uploaded to the Play Store.
+                      Then features can be requested until the confirmation path is triggered.
+                     */
                     startIntentSender(state.resolutionIntent().intentSender, null, 0, 0, 0)
                 }
                 SplitInstallSessionStatus.DOWNLOADED or SplitInstallSessionStatus.INSTALLED -> {
@@ -63,20 +72,31 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val clickListener = View.OnClickListener {
-        when (it.id) {
-            R.id.btn_load_kotlin -> loadAndLaunchModule(getString(R.string.module_feature_kotlin))
-            R.id.btn_load_java -> loadAndLaunchModule(getString(R.string.module_feature_java))
-            R.id.btn_load_assets -> loadAndLaunchModule(getString(R.string.module_assets))
-            R.id.btn_load_native -> loadAndLaunchModule(getString(R.string.module_native))
-            R.id.btn_load_all -> loadAllFeatures()
+    private val moduleKotlin by lazy { getString(R.string.module_feature_kotlin) }
+    private val moduleJava by lazy { getString(R.string.module_feature_java) }
+    private val moduleNative by lazy { getString(R.string.module_native) }
+    private val moduleAssets by lazy { getString(R.string.module_assets) }
+
+    private val clickListener by lazy {
+        View.OnClickListener {
+            when (it.id) {
+                R.id.btn_load_kotlin -> loadAndLaunchModule(moduleKotlin)
+                R.id.btn_load_java -> loadAndLaunchModule(moduleJava)
+                R.id.btn_load_assets -> loadAndLaunchModule(moduleAssets)
+                R.id.btn_load_native -> loadAndLaunchModule(moduleNative)
+                R.id.btn_install_all_now -> installAllFeaturesNow()
+                R.id.btn_install_all_deferred -> installAllFeaturesDeferred()
+                R.id.btn_request_uninstall -> requestUninstall()
+            }
         }
     }
 
     private lateinit var manager: SplitInstallManager
 
     private lateinit var progress: Group
+
     private lateinit var buttons: Group
+
     private lateinit var progressBar: ProgressBar
     private lateinit var progressText: TextView
 
@@ -87,13 +107,24 @@ class MainActivity : AppCompatActivity() {
         initializeViews()
     }
 
+    override fun onResume() {
+        // Listener can be registered even without directly triggering a download.
+        manager.registerListener(listener)
+        super.onResume()
+    }
+
+    override fun onPause() {
+        // Make sure to dispose of the listener once it's no longer needed.
+        manager.unregisterListener(listener)
+        super.onPause()
+    }
+
     /**
      * Load a feature by module name.
      * @param name The name of the feature module to load.
      */
     private fun loadAndLaunchModule(name: String) {
         updateProgressMessage("Loading module $name")
-        manager.registerListener(listener)
         // Skip loading if the module already is installed. Perform success action directly.
         if (manager.installedModules.contains(name)) {
             updateProgressMessage("Already installed")
@@ -129,22 +160,42 @@ class MainActivity : AppCompatActivity() {
                 .show()
     }
 
-    /** Load all features but do not launch any of them. */
-    private fun loadAllFeatures() {
+    /** Install all features but do not launch any of them. */
+    private fun installAllFeaturesNow() {
         // Request all known modules to be downloaded in a single session.
         val request = SplitInstallRequest.newBuilder()
-                .addModule(getString(R.string.module_feature_kotlin))
-                .addModule(getString(R.string.module_feature_java))
-                .addModule(getString(R.string.module_native))
-                .addModule(getString(R.string.module_assets))
+                .addModule(moduleKotlin)
+                .addModule(moduleJava)
+                .addModule(moduleNative)
+                .addModule(moduleAssets)
                 .build()
 
-        manager.registerListener {
-            Toast.makeText(this, "Loading ${it.moduleNames()}", Toast.LENGTH_LONG).show()
-        }
-
         // Start the install with above request.
-        manager.startInstall(request)
+        manager.startInstall(request).addOnSuccessListener {
+            toastAndLog("Loading ${request.moduleNames}")
+        }
+    }
+
+    /** Install all features deferred. */
+    private fun installAllFeaturesDeferred() {
+
+        val modules = listOf(moduleKotlin, moduleJava, moduleAssets, moduleNative)
+
+        manager.deferredInstall(modules).addOnSuccessListener {
+            toastAndLog("Deferred installation of $modules")
+        }
+    }
+
+    /** Request uninstall of all features. */
+    private fun requestUninstall() {
+
+        toastAndLog("Requesting uninstall of all modules." +
+                "This will happen at some point in the future.")
+
+        val installedModules = manager.installedModules.toList()
+        manager.deferredUninstall(installedModules).addOnSuccessListener {
+            toastAndLog("Uninstalling $installedModules")
+        }
     }
 
     /**
@@ -155,14 +206,13 @@ class MainActivity : AppCompatActivity() {
     private fun onSuccessfulLoad(moduleName: String, launch: Boolean) {
         if (launch) {
             when (moduleName) {
-                getString(R.string.module_feature_kotlin) -> launchActivity(kotlinSampleClassname)
-                getString(R.string.module_feature_java) -> launchActivity(javaSampleClassname)
-                getString(R.string.module_native) -> launchActivity(nativeSampleClassname)
-                getString(R.string.module_assets) -> displayAssets()
+                moduleKotlin -> launchActivity(kotlinSampleClassname)
+                moduleJava -> launchActivity(javaSampleClassname)
+                moduleNative -> launchActivity(nativeSampleClassname)
+                moduleAssets -> displayAssets()
             }
         }
-        // Make sure to dispose of the listener once it's no longer needed.
-        manager.unregisterListener(listener)
+
         displayButtons()
     }
 
@@ -200,7 +250,9 @@ class MainActivity : AppCompatActivity() {
         setClickListener(R.id.btn_load_java, clickListener)
         setClickListener(R.id.btn_load_assets, clickListener)
         setClickListener(R.id.btn_load_native, clickListener)
-        setClickListener(R.id.btn_load_all, clickListener)
+        setClickListener(R.id.btn_install_all_now, clickListener)
+        setClickListener(R.id.btn_install_all_deferred, clickListener)
+        setClickListener(R.id.btn_request_uninstall, clickListener)
     }
 
     private fun setClickListener(id: Int, listener: View.OnClickListener) {
@@ -223,4 +275,10 @@ class MainActivity : AppCompatActivity() {
         progress.visibility = View.GONE
         buttons.visibility = View.VISIBLE
     }
+
+}
+
+fun Context.toastAndLog(text: String) {
+    Toast.makeText(this, text, Toast.LENGTH_LONG).show()
+    Log.d("DynamicFeatures", text)
 }
