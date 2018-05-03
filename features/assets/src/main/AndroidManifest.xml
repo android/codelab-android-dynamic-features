@@ -23,7 +23,7 @@
 
     <dist:module
         dist:onDemand="true"
-        dist:title="Assets Only">
+        dist:title="@string/title">
         <dist:fusing include="true" />
     </dist:module>
 

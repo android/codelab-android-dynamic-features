@@ -65,9 +65,11 @@ class MainActivity : AppCompatActivity() {
                      */
                     startIntentSender(state.resolutionIntent().intentSender, null, 0, 0, 0)
                 }
-                SplitInstallSessionStatus.DOWNLOADED or SplitInstallSessionStatus.INSTALLED -> {
+                SplitInstallSessionStatus.INSTALLED -> {
                     onSuccessfulLoad(name, launch = !multiInstall)
                 }
+
+                SplitInstallSessionStatus.INSTALLING -> displayLoadingState(state, "Installing $name")
             }
         }
     }
