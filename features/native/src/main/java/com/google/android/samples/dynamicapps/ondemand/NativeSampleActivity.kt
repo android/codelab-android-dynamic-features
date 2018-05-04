@@ -26,6 +26,8 @@ class NativeSampleActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        SplitInstallHelper.loadLibrary(this, "hello-jni")
+
         setContentView(R.layout.activity_hello_jni)
         findViewById<TextView>(R.id.hello_textview).text = stringFromJNI()
     }
@@ -33,8 +35,4 @@ class NativeSampleActivity : AppCompatActivity() {
     /** Read a string from packaged native code. */
     external fun stringFromJNI(): String
 
-    init {
-        /* Load native libraries using the SplitInstallHelper rather than System.loadLibrary. */
-        SplitInstallHelper.loadLibrary(this, "hello-jni")
-    }
 }
