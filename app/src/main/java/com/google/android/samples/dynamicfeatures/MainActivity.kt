@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.android.samples.dynamicapps
+package com.google.android.samples.dynamicfeatures
 
 import android.content.Context
 import android.content.Intent
@@ -35,7 +35,7 @@ import com.google.android.play.core.splitinstall.SplitInstallStateUpdatedListene
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 
 
-private const val packageName = "com.google.android.samples.dynamicapps.ondemand"
+private const val packageName = "com.google.android.samples.dynamicfeatures.ondemand"
 
 private const val kotlinSampleClassname = "$packageName.KotlinSampleActivity"
 
