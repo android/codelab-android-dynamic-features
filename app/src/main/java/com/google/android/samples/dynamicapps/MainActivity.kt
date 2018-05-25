@@ -70,6 +70,9 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 SplitInstallSessionStatus.INSTALLING -> displayLoadingState(state, "Installing $name")
+                SplitInstallSessionStatus.FAILED -> {
+                    Log.e(TAG, "Error: ${state.errorCode()} for module ${state.moduleNames()}")
+                }
             }
         }
     }
@@ -282,5 +285,7 @@ class MainActivity : AppCompatActivity() {
 
 fun Context.toastAndLog(text: String) {
     Toast.makeText(this, text, Toast.LENGTH_LONG).show()
-    Log.d("DynamicFeatures", text)
+    Log.d(TAG, text)
 }
+
+private const val TAG = "DynamicFeatures"
