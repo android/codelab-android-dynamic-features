@@ -16,7 +16,10 @@
 
 package com.google.android.samples.dynamicfeatures.ondemand;
 
+import android.content.Context;
 import android.os.Bundle;
+
+import com.google.android.play.core.splitcompat.SplitCompat;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,5 +33,11 @@ public class JavaSampleActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feature_java);
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(newBase);
+        SplitCompat.install(this);
     }
 }
