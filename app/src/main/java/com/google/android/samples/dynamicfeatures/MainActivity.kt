@@ -62,7 +62,6 @@ class MainActivity : AppCompatActivity() {
                       In order to see this, the application has to be uploaded to the Play Store.
                       Then features can be requested until the confirmation path is triggered.
                      */
-                    // NOTE that resolutionIntent is Nullable
                     startIntentSender(state.resolutionIntent()?.intentSender, null, 0, 0, 0)
                 }
                 SplitInstallSessionStatus.INSTALLED -> {

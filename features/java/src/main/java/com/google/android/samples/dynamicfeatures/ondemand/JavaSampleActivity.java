@@ -16,18 +16,12 @@
 
 package com.google.android.samples.dynamicfeatures.ondemand;
 
-import android.content.Context;
 import android.os.Bundle;
-
-import com.google.android.play.core.splitcompat.SplitCompat;
-
+import com.google.android.samples.dynamicfeatures.BaseSplitActivity;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
-/**
- * A simple activity displaying text written in Java.
- */
-public class JavaSampleActivity extends AppCompatActivity {
+/** A simple activity displaying text written in Java. */
+public class JavaSampleActivity extends BaseSplitActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -35,9 +29,4 @@ public class JavaSampleActivity extends AppCompatActivity {
         setContentView(R.layout.activity_feature_java);
     }
 
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(newBase);
-        SplitCompat.install(this);
-    }
 }
