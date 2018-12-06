@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-apply plugin: 'com.android.dynamic-feature'
+apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-
     compileSdkVersion versions.compileSdk
     defaultConfig {
         minSdkVersion versions.minSdk
@@ -27,6 +26,9 @@ android {
 }
 
 dependencies {
-
-    implementation project(':app')
+    implementation 'androidx.annotation:annotation:1.0.1'
+    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'com.google.android.material:material:1.0.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
 }

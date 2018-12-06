@@ -20,10 +20,10 @@ buildscript {
 
     ext.versions = [
             'compileSdk'        : 28,
-            'minSdk'            : 21,
+            'minSdk'            : 16,
             'targetSdk'         : 28,
-            'kotlin'            : '1.2.71',
-            'playcore'          : '1.3.4',
+            'kotlin'            : '1.3.11',
+            'playcore'          : '1.3.6',
     ]
 
     ext.names = [
@@ -35,7 +35,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.0-alpha13'
+        classpath 'com.android.tools.build:gradle:3.3.0-rc02'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
 
         // NOTE: Do not place your application dependencies here; they belong
