@@ -15,18 +15,6 @@
   ~ limitations under the License.
   -->
 
-<!-- This feature module only contains a single assets file relevant to the Android app. -->
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:dist="http://schemas.android.com/apk/distribution"
-    package="com.google.android.samples.dynamicfeatures.ondemand.assets">
-
-    <dist:module
-        dist:onDemand="true"
-        dist:title="@string/module_assets">
-        <dist:fusing dist:include="true" />
-    </dist:module>
-
-    <!-- This feature module doesn't contain code. -->
-    <application android:hasCode="false" />
-
-</manifest>
+<resources>
+    <string name="module_assets">assets</string>
+</resources>
