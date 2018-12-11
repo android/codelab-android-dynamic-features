@@ -80,9 +80,9 @@ class MainActivity : AppCompatActivity() {
     private val clickListener by lazy {
         View.OnClickListener {
             when (it.id) {
-                R.id.btn_load_kotlin -> launchActivity(kotlinSampleClassname)
-                R.id.btn_load_java -> launchActivity(javaSampleClassname)
-                R.id.btn_load_native -> launchActivity(nativeSampleClassname)
+                R.id.btn_load_kotlin -> loadAndLaunchModule(moduleKotlin)
+                R.id.btn_load_java -> loadAndLaunchModule(moduleJava)
+                R.id.btn_load_native -> loadAndLaunchModule(moduleNative)
                 R.id.btn_load_assets -> loadAndLaunchModule(moduleAssets)
             }
         }
