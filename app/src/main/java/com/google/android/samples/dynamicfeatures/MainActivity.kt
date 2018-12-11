@@ -84,6 +84,9 @@ class MainActivity : AppCompatActivity() {
                 R.id.btn_load_java -> loadAndLaunchModule(moduleJava)
                 R.id.btn_load_native -> loadAndLaunchModule(moduleNative)
                 R.id.btn_load_assets -> loadAndLaunchModule(moduleAssets)
+                R.id.btn_install_all_now -> installAllFeaturesNow()
+                R.id.btn_install_all_deferred -> installAllFeaturesDeferred()
+                R.id.btn_request_uninstall -> requestUninstall()
             }
         }
     }
@@ -157,6 +160,44 @@ class MainActivity : AppCompatActivity() {
                 .show()
     }
 
+    /** Install all features but do not launch any of them. */
+    private fun installAllFeaturesNow() {
+        // Request all known modules to be downloaded in a single session.
+        val request = SplitInstallRequest.newBuilder()
+                .addModule(moduleKotlin)
+                .addModule(moduleJava)
+                .addModule(moduleNative)
+                .addModule(moduleAssets)
+                .build()
+
+        // Start the install with above request.
+        manager.startInstall(request).addOnSuccessListener {
+            toastAndLog("Loading ${request.moduleNames}")
+        }
+    }
+
+    /** Install all features deferred. */
+    private fun installAllFeaturesDeferred() {
+
+        val modules = listOf(moduleKotlin, moduleJava, moduleAssets, moduleNative)
+
+        manager.deferredInstall(modules).addOnSuccessListener {
+            toastAndLog("Deferred installation of $modules")
+        }
+    }
+
+    /** Request uninstall of all features. */
+    private fun requestUninstall() {
+
+        toastAndLog("Requesting uninstall of all modules." +
+                "This will happen at some point in the future.")
+
+        val installedModules = manager.installedModules.toList()
+        manager.deferredUninstall(installedModules).addOnSuccessListener {
+            toastAndLog("Uninstalling $installedModules")
+        }
+    }
+
     /**
      * Define what to do once a feature module is loaded successfully.
      * @param moduleName The name of the successfully loaded module.
@@ -211,6 +252,9 @@ class MainActivity : AppCompatActivity() {
         setClickListener(R.id.btn_load_java, clickListener)
         setClickListener(R.id.btn_load_assets, clickListener)
         setClickListener(R.id.btn_load_native, clickListener)
+        setClickListener(R.id.btn_install_all_now, clickListener)
+        setClickListener(R.id.btn_install_all_deferred, clickListener)
+        setClickListener(R.id.btn_request_uninstall, clickListener)
     }
 
     private fun setClickListener(id: Int, listener: View.OnClickListener) {
