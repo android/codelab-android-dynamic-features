@@ -44,30 +44,28 @@ class MainActivity : AppCompatActivity() {
     /** Listener used to handle changes in state for install requests. */
     private val listener = SplitInstallStateUpdatedListener { state ->
         val multiInstall = state.moduleNames().size > 1
-        state.moduleNames().forEach { name ->
-            // Handle changes in state.
-            when (state.status()) {
-                SplitInstallSessionStatus.DOWNLOADING -> {
-                    //  In order to see this, the application has to be uploaded to the Play Store.
-                    displayLoadingState(state, "Downloading $name")
-                }
-                SplitInstallSessionStatus.REQUIRES_USER_CONFIRMATION -> {
-                    /*
-                      This may occur when attempting to download a sufficiently large module.
+        val names = state.moduleNames().joinToString(" - ")
+        when (state.status()) {
+            SplitInstallSessionStatus.DOWNLOADING -> {
+                //  In order to see this, the application has to be uploaded to the Play Store.
+                displayLoadingState(state, "Downloading $names")
+            }
+            SplitInstallSessionStatus.REQUIRES_USER_CONFIRMATION -> {
+                /*
+                  This may occur when attempting to download a sufficiently large module.
 
-                      In order to see this, the application has to be uploaded to the Play Store.
-                      Then features can be requested until the confirmation path is triggered.
-                     */
-                    startIntentSender(state.resolutionIntent()?.intentSender, null, 0, 0, 0)
-                }
-                SplitInstallSessionStatus.INSTALLED -> {
-                    onSuccessfulLoad(name, launch = !multiInstall)
-                }
+                  In order to see this, the application has to be uploaded to the Play Store.
+                  Then features can be requested until the confirmation path is triggered.
+                 */
+                startIntentSender(state.resolutionIntent()?.intentSender, null, 0, 0, 0)
+            }
+            SplitInstallSessionStatus.INSTALLED -> {
+                onSuccessfulLoad(names, launch = !multiInstall)
+            }
 
-                SplitInstallSessionStatus.INSTALLING -> displayLoadingState(state, "Installing $name")
-                SplitInstallSessionStatus.FAILED -> {
-                    toastAndLog("Error: ${state.errorCode()} for module ${state.moduleNames()}")
-                }
+            SplitInstallSessionStatus.INSTALLING -> displayLoadingState(state, "Installing $names")
+            SplitInstallSessionStatus.FAILED -> {
+                toastAndLog("Error: ${state.errorCode()} for module ${state.moduleNames()}")
             }
         }
     }
