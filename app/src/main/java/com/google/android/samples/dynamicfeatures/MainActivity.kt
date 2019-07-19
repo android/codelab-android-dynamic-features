@@ -49,6 +49,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private lateinit var manager: SplitInstallManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)

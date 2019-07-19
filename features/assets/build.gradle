@@ -19,7 +19,6 @@
 // and add this one:
 apply plugin: 'com.android.dynamic-feature'
 
-
 android {
 
     compileSdkVersion versions.compileSdk
