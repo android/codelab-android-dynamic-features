@@ -19,9 +19,10 @@
     xmlns:dist="http://schemas.android.com/apk/distribution"
     package="com.google.android.samples.dynamicfeatures.ondemand.ccode">
 
-    <dist:module
-        dist:onDemand="true"
-        dist:title="@string/module_native">
+    <dist:module dist:title="@string/module_native">
+        <dist:delivery>
+            <dist:on-demand/>
+        </dist:delivery>
         <dist:fusing dist:include="true" />
     </dist:module>
 
