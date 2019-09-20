@@ -28,7 +28,7 @@ abstract class BaseSplitActivity : AppCompatActivity() {
 
     override fun attachBaseContext(newBase: Context?) {
         super.attachBaseContext(newBase)
-        SplitCompat.install(this)
+        SplitCompat.installActivity(this)
     }
 
 }
