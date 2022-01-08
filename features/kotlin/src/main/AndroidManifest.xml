@@ -20,7 +20,8 @@
     package="com.google.android.samples.dynamicfeatures.ondemand.kotlin">
 
     <application>
-        <activity android:name="com.google.android.samples.dynamicfeatures.ondemand.KotlinSampleActivity">
+        <activity android:name="com.google.android.samples.dynamicfeatures.ondemand.KotlinSampleActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
