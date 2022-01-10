@@ -20,7 +20,8 @@
     package="com.google.android.samples.dynamicfeatures.ondemand.ccode">
 
     <application>
-        <activity android:name="com.google.android.samples.dynamicfeatures.ondemand.NativeSampleActivity">
+        <activity android:name="com.google.android.samples.dynamicfeatures.ondemand.NativeSampleActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
