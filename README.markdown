@@ -1,3 +1,5 @@
+# 🛑 This codelab is deprecated and will be removed soon 🛑
+
 # On-Demand modules codelab
 
 This is the code repository for the [Android On-Demand modules
